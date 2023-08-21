@@ -2,44 +2,28 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'dart:typed_data';
+import '../services/client.dart';
 import '../services/socket_service.dart';
 import '../utils/terminal_service.dart';
 
-class GamePage extends StatefulWidget {
-  const GamePage({super.key, required this.title, required this.socket});
+class TicTacToe extends StatefulWidget {
+  const TicTacToe({super.key, required this.title, required this.socket});
 
   final Socket socket;
   final String title;
 
   @override
-  State<GamePage> createState() => _GamePageState();
+  State<TicTacToe> createState() => _TicTacToe();
 }
 
-class _GamePageState extends State<GamePage> {
+class _TicTacToe extends State<TicTacToe> {
   String _message = "";
-  String _name = "";
   String _selection = "";
 
   void listenSocket(Socket socket) {
-    socket.listen(
-          (Uint8List data) {
-        final serverResponse = String.fromCharCodes(data);
-        setState(() {
-          _message = serverResponse;
-        });
-      },
-      // handle errors
-      onError: (error) {
-        print(error);
-        socket.destroy();
-      },
-
-      // handle server ending connection
-      onDone: () {
-        print('Server left.');
-        socket.destroy();
-      },
-    );
+    listenToSocket(socket, (message) {
+      _message = message;
+    });
 
     sendMessage(socket: socket, message: constructInput(StringMatcher.namePrefix, "Yilmaz"));
   }

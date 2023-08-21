@@ -24,21 +24,21 @@ void handleConnection(Socket client) {
         (Uint8List data) async {
       final message = String.fromCharCodes(data);
 
-      SocketCommand command = parseCommand(message);
-
-      if (command.key == SocketAction.login) {
+      if (message.startsWith(StringMatcher.namePrefix)) {
         for (var player in players) {
-          player.socket.write(SocketCommand(
-              SocketAction.successMessage, "${command.value} joined the game"));
+          player.socket.write("${deconstructInput(StringMatcher.namePrefix, message)} joined the game");
         }
+        players.add(Player(socket: client, username: message, message: ""));
+      } else if (message.startsWith(StringMatcher.messagePrefix)) {
+        for (var player in players) {
+          player.socket.write(message);
+        }
+        print(deconstructInput(StringMatcher.messagePrefix, message));
+      } else {
+        print("$message doesn't match");
 
-        players.add(Player(socket: client, username: command.value.toString()));
-
-        client.write(
-          SocketCommand(SocketAction.successMessage,
-              "You are logged in as: ${command.value}"),
-        );
       }
+
     }, // handle errors
     onError: (error) {
       print(error);

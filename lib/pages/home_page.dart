@@ -1,3 +1,4 @@
+import 'package:family_competition/pages/game_page.dart';
 import 'package:family_competition/services/client.dart';
 import 'package:family_competition/services/server.dart';
 import 'package:flutter/material.dart';
@@ -12,15 +13,17 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  int _counter = 0;
-
   void _startClient() {
-    connectAsClient();
+    connectAsClient().then((socket) => {
+      Navigator.push(context, MaterialPageRoute(builder: (context) => GamePage(title: "Game Page", socket: socket)))
+    });
   }
 
   void _startServer() {
     connectAsServer().then((value) {
-      connectAsClient();
+      connectAsClient().then((socket) => {
+        Navigator.push(context, MaterialPageRoute(builder: (context) => GamePage(title: "Game Page", socket: socket)))
+      });
     });
   }
 
@@ -38,7 +41,9 @@ class _HomePageState extends State<HomePage> {
             const Text(
               'Connect As',
             ),
+            const SizedBox(height: 40),
             Row(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Padding(
                   padding: const EdgeInsets.all(8.0),
@@ -67,10 +72,6 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ),
               ],
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
             ),
           ],
         ),

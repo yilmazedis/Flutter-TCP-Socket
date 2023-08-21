@@ -1,32 +1,24 @@
 import 'dart:io';
 
-enum SocketAction { login, successMessage, unknown }
+enum SocketAction { username, message, unknown }
 
-SocketAction parseStringToSocketAction(String value) {
-  switch (value) {
-    case "SocketAction.login":
-      return SocketAction.login;
-    case "SocketAction.successMessage":
-      return SocketAction.successMessage;
-    default:
-      return SocketAction.unknown;
-  }
-}
-
-typedef SocketCommand = MapEntry<SocketAction, Object>;
-typedef LoginCommand = MapEntry<SocketAction, String>;
-
-void sendMessageToServer(Socket socket, SocketCommand message) {
-  // print("Client: ${message.key} - ${message.value}");
+void sendMessage({required Socket socket, required String message}) {
   socket.write(message);
 }
 
-SocketCommand parseCommand(String message) {
-  List<String> splitMessage =
-  message.substring(9, message.indexOf(")")).split(":");
+String constructInput(String prefix, String content) {
+  return "$prefix$content";
+}
 
-  return SocketCommand(
-    parseStringToSocketAction(splitMessage.removeAt(0)),
-    splitMessage.join(),
-  );
+String deconstructInput(String prefix, String input) {
+  if (input.startsWith(prefix)) {
+    return input.substring(prefix.length);
+  } else {
+    return input;
+  }
+}
+
+class StringMatcher {
+  static const String namePrefix = "name:";
+  static const String messagePrefix = "message:";
 }
