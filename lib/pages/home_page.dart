@@ -14,16 +14,12 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   void _startClient() {
-    connectAsClient().then((socket) => {
-      Navigator.push(context, MaterialPageRoute(builder: (context) => GamePage(title: "Game Page", socket: socket)))
-    });
+    navigateToGamePage(context);
   }
 
   void _startServer() {
     connectAsServer().then((value) {
-      connectAsClient().then((socket) => {
-        Navigator.push(context, MaterialPageRoute(builder: (context) => GamePage(title: "Game Page", socket: socket)))
-      });
+      Navigator.push(context, MaterialPageRoute(builder: (context) => const GamePage()));
     });
   }
 
@@ -48,8 +44,8 @@ class _HomePageState extends State<HomePage> {
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: FloatingActionButton(
+                    heroTag: UniqueKey(),
                     onPressed: _startClient,
-                    tooltip: 'Client',
                     child: const Column(
                       children: [
                         Text("Client"),
@@ -61,8 +57,8 @@ class _HomePageState extends State<HomePage> {
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: FloatingActionButton(
+                    heroTag: UniqueKey(),
                     onPressed: _startServer,
-                    tooltip: 'Server',
                     child: const Column(
                       children: [
                         Text("Server"),

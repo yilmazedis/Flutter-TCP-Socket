@@ -30,10 +30,18 @@ void handleConnection(Socket client) {
         }
         players.add(Player(socket: client, username: message, message: ""));
       } else if (message.startsWith(StringMatcher.messagePrefix)) {
-        for (var player in players) {
-          player.socket.write(message);
+
+        final destructedMessage = deconstructInput(StringMatcher.messagePrefix, message);
+
+        if (destructedMessage == StringMatcher.selectedGameIndex) {
+          client.write(selectedGameIndex.toString());
+          return;
         }
-        print(deconstructInput(StringMatcher.messagePrefix, message));
+
+        for (var player in players) {
+          player.socket.write(destructedMessage);
+        }
+        print(destructedMessage);
       } else {
         print("$message doesn't match");
 

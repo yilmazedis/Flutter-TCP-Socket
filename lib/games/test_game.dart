@@ -6,16 +6,16 @@ import '../services/client.dart';
 import '../services/socket_service.dart';
 import '../utils/terminal_service.dart';
 
-class TicTacToe extends StatefulWidget {
-  const TicTacToe({super.key, required this.socket});
+class TestGame extends StatefulWidget {
+  const TestGame({super.key, required this.socket});
 
   final Socket socket;
 
   @override
-  State<TicTacToe> createState() => _TicTacToe();
+  State<TestGame> createState() => _TestGame();
 }
 
-class _TicTacToe extends State<TicTacToe> {
+class _TestGame extends State<TestGame> {
   String _message = "";
   String _selection = "";
 
@@ -37,7 +37,6 @@ class _TicTacToe extends State<TicTacToe> {
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: FloatingActionButton(
-        heroTag: UniqueKey(),
         onPressed: _sendSelection,
         child: const Icon(Icons.circle_outlined),
       ),
@@ -53,21 +52,11 @@ class _TicTacToe extends State<TicTacToe> {
           children: [
             onePiece(),
             onePiece(),
-            onePiece(),
           ],
         ),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            onePiece(),
-            onePiece(),
-            onePiece(),
-          ],
-        ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            onePiece(),
             onePiece(),
             onePiece(),
           ],
@@ -83,7 +72,6 @@ class _TicTacToe extends State<TicTacToe> {
         Padding(
           padding: const EdgeInsets.all(16.0),
           child: FloatingActionButton(
-            heroTag: UniqueKey(),
             onPressed: () {
               setState(() {
                 _selection = constructInput(StringMatcher.messagePrefix, "X");
@@ -95,7 +83,6 @@ class _TicTacToe extends State<TicTacToe> {
         Padding(
           padding: const EdgeInsets.all(16.0),
           child: FloatingActionButton(
-            heroTag: UniqueKey(),
             onPressed: () {
               setState(() {
                 _selection = constructInput(StringMatcher.messagePrefix, "O");

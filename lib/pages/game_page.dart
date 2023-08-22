@@ -1,128 +1,23 @@
-import 'dart:io';
-
+import 'package:family_competition/games/tic_tac_toe.dart';
 import 'package:flutter/material.dart';
-import 'dart:typed_data';
+import '../games/test_game.dart';
+import '../services/client.dart';
 import '../services/socket_service.dart';
-import '../utils/terminal_service.dart';
 
 class GamePage extends StatefulWidget {
-  const GamePage({super.key, required this.title, required this.socket});
-
-  final Socket socket;
-  final String title;
+  const GamePage({super.key});
 
   @override
   State<GamePage> createState() => _GamePageState();
 }
 
 class _GamePageState extends State<GamePage> {
-  String _message = "";
-  String _name = "";
-  String _selection = "";
 
-  void listenSocket(Socket socket) {
-    socket.listen(
-          (Uint8List data) {
-        final serverResponse = String.fromCharCodes(data);
-        setState(() {
-          _message = serverResponse;
-        });
-      },
-      // handle errors
-      onError: (error) {
-        print(error);
-        socket.destroy();
-      },
+  final List<String> gameNames = ['Tic Tac Toe', 'Test Game', 'Test Game']; // List of game names
 
-      // handle server ending connection
-      onDone: () {
-        print('Server left.');
-        socket.destroy();
-      },
-    );
-
-    sendMessage(socket: socket, message: constructInput(StringMatcher.namePrefix, "Yilmaz"));
-  }
-
-  void _sendSelection() {
-    sendMessage(socket: widget.socket, message: _selection);
-  }
-
-  Widget onePiece() {
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: FloatingActionButton(
-        onPressed: _sendSelection,
-        child: const Icon(Icons.circle_outlined),
-      ),
-    );
-  }
-
-  Widget ticTacToe() {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            onePiece(),
-            onePiece(),
-            onePiece(),
-          ],
-        ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            onePiece(),
-            onePiece(),
-            onePiece(),
-          ],
-        ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            onePiece(),
-            onePiece(),
-            onePiece(),
-          ],
-        ),
-      ],
-    );
-  }
-
-  Widget selectLetter() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: FloatingActionButton(
-            onPressed: () {
-              setState(() {
-                _selection = constructInput(StringMatcher.messagePrefix, "X");
-              });
-            },
-            child: const Icon(Icons.close),
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: FloatingActionButton(
-            onPressed: () {
-              setState(() {
-                _selection = constructInput(StringMatcher.messagePrefix, "O");
-              });
-            },
-            child: const Icon(Icons.circle_outlined),
-          ),
-        ),
-      ],
-    );
-  }
 
   @override
   void initState() {
-    listenSocket(widget.socket);
     super.initState();
   }
 
@@ -130,23 +25,56 @@ class _GamePageState extends State<GamePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text(widget.title),
+        title: const Text('Game List'),
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            selectLetter(),
-            const SizedBox(height: 40),
-            ticTacToe(),
-            Text(
-              deconstructInput(StringMatcher.messagePrefix, _message),
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
-          ],
-        ),
+      body: ListView.builder(
+        itemCount: gameNames.length,
+        itemBuilder: (context, index) {
+          return ListTile(
+            title: Text(gameNames[index]),
+            onTap: () {
+              selectedGameIndex = index;
+              navigateToGamePage(context);
+            },
+          );
+        },
       ),
     );
   }
+}
+
+void navigateToGamePage(BuildContext context) {
+  // Connect As Client
+  connectAsClient().then((socket) {
+
+    // Send message to ask selected game
+    sendMessage(socket: socket, message: constructInput(StringMatcher.messagePrefix, StringMatcher.selectedGameIndex));
+
+    // Wait for server to send you selected game index
+    listenToSocket(socket, (message) {
+      socket.flush();
+      socket.close();
+      selectedGameIndex = int.parse(message);
+
+      connectAsClient().then((newSocket) {
+        switch (selectedGameIndex) {
+          case 0:
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => TicTacToe(socket: newSocket)));
+          case 1:
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => TestGame(socket: newSocket)));
+          default:
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => TestGame(socket: newSocket)));
+        }
+      });
+    });
+  });
 }
