@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'games/Minesweeper.dart';
+import 'games/hangman.dart';
+import 'games/simon_says.dart';
 import 'pages/home_page.dart';
 
 void main() {
@@ -19,6 +22,7 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
       home: const HomePage(title: 'Flutter Demo Home Page'),
+      //home: SimonSaysGame(),
     );
   }
 }

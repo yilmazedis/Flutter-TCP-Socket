@@ -34,14 +34,16 @@ void handleConnection(Socket client) {
         final destructedMessage = deconstructInput(StringMatcher.messagePrefix, message);
 
         if (destructedMessage == StringMatcher.selectedGameIndex) {
+          players.removeWhere((element) => element.socket == client);
           client.write(selectedGameIndex.toString());
           return;
         }
 
         for (var player in players) {
           player.socket.write(destructedMessage);
+          print(destructedMessage);
         }
-        print(destructedMessage);
+
       } else {
         print("$message doesn't match");
 

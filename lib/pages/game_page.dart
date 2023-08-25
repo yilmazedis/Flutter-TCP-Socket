@@ -1,6 +1,5 @@
 import 'package:family_competition/games/tic_tac_toe.dart';
 import 'package:flutter/material.dart';
-import '../games/test_game.dart';
 import '../services/client.dart';
 import '../services/socket_service.dart';
 
@@ -51,9 +50,8 @@ void navigateToGamePage(BuildContext context) {
     sendMessage(socket: socket, message: constructInput(StringMatcher.messagePrefix, StringMatcher.selectedGameIndex));
 
     // Wait for server to send you selected game index
-    listenToSocket(socket, (message) {
-      socket.flush();
-      socket.close();
+    listenToSocket(socket, (message) async {
+      await socket.close();
       selectedGameIndex = int.parse(message);
 
       connectAsClient().then((newSocket) {
@@ -67,12 +65,12 @@ void navigateToGamePage(BuildContext context) {
             Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => TestGame(socket: newSocket)));
+                    builder: (context) => TicTacToe(socket: newSocket)));
           default:
             Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => TestGame(socket: newSocket)));
+                    builder: (context) => TicTacToe(socket: newSocket)));
         }
       });
     });
