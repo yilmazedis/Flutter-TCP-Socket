@@ -3,6 +3,7 @@ import 'dart:io';
 enum SocketAction { username, message, unknown }
 
 int selectedGameIndex = 0;
+int activePlayer = 0;
 
 void sendMessage({required Socket socket, required String message}) {
   socket.write(message);
@@ -24,5 +25,6 @@ class StringMatcher {
   static const String namePrefix = "name:";
   static const String messagePrefix = "message:";
 
-  static const String selectedGameIndex = "selectedGameIndex";
+  static const String selectedGameIndexPrefix = "selectedGameIndex:";
+  static const String activePlayerPrefix= "activePlayer:";
 }

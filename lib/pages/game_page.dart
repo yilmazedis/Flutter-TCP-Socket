@@ -1,6 +1,7 @@
 import 'package:family_competition/games/tic_tac_toe.dart';
 import 'package:flutter/material.dart';
 import '../services/client.dart';
+import '../services/server.dart';
 import '../services/socket_service.dart';
 
 class GamePage extends StatefulWidget {
@@ -12,7 +13,7 @@ class GamePage extends StatefulWidget {
 
 class _GamePageState extends State<GamePage> {
 
-  final List<String> gameNames = ['Tic Tac Toe', 'Test Game', 'Test Game']; // List of game names
+  // final List<String> gameNames = ['Tic Tac Toe', 'Test Game', 'Test Game']; // List of game names
 
 
   @override
@@ -27,10 +28,10 @@ class _GamePageState extends State<GamePage> {
         title: const Text('Game List'),
       ),
       body: ListView.builder(
-        itemCount: gameNames.length,
+        itemCount: games.length,
         itemBuilder: (context, index) {
           return ListTile(
-            title: Text(gameNames[index]),
+            title: Text(games[index].name),
             onTap: () {
               selectedGameIndex = index;
               navigateToGamePage(context);
@@ -42,36 +43,41 @@ class _GamePageState extends State<GamePage> {
   }
 }
 
-void navigateToGamePage(BuildContext context) {
+void navigateToGamePage(BuildContext context, [Function(String)? errorMessage]) {
   // Connect As Client
   connectAsClient().then((socket) {
 
-    // Send message to ask selected game
-    sendMessage(socket: socket, message: constructInput(StringMatcher.messagePrefix, StringMatcher.selectedGameIndex));
+    // Required Information
+    sendMessage(socket: socket, message: StringMatcher.selectedGameIndexPrefix);
 
     // Wait for server to send you selected game index
     listenToSocket(socket, (message) async {
-      await socket.close();
-      selectedGameIndex = int.parse(message);
 
-      connectAsClient().then((newSocket) {
-        switch (selectedGameIndex) {
-          case 0:
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => TicTacToe(socket: newSocket)));
-          case 1:
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => TicTacToe(socket: newSocket)));
-          default:
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => TicTacToe(socket: newSocket)));
+      if (message.startsWith(StringMatcher.selectedGameIndexPrefix)) {
+        final input = deconstructInput(StringMatcher.selectedGameIndexPrefix, message);
+        selectedGameIndex = int.parse(input);
+
+        /// second option
+        sendMessage(socket: socket, message: StringMatcher.activePlayerPrefix);
+        return;
+      } else if (message.startsWith(StringMatcher.activePlayerPrefix)) {
+        final input = deconstructInput(StringMatcher.activePlayerPrefix, message);
+        activePlayer = int.parse(input);
+        if (activePlayer >= games[selectedGameIndex].userLimit) {
+          await socket.close();
+          if (errorMessage != null) {
+            errorMessage("${games[selectedGameIndex].name} has been playing with ${games[selectedGameIndex].userLimit}");
+          }
+          return;
         }
+      }
+      await socket.close();
+      // Start Game Client
+      connectAsClient().then((newSocket) {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => games[selectedGameIndex].createGameWidget(socket: newSocket)));
       });
     });
   });

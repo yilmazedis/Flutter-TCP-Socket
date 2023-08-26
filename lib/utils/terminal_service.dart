@@ -1,6 +1,12 @@
 import 'package:ansicolor/ansicolor.dart';
 import 'package:flutter/foundation.dart';
 
+void printDebug(String message) {
+  if (kDebugMode) {
+    print(message);
+  }
+}
+
 void printRed(String message) {
   AnsiPen pen = AnsiPen()..red();
   if (kDebugMode) {

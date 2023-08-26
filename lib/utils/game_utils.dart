@@ -20,3 +20,24 @@ void showQuitGameDialog(BuildContext context, Function quit) {
     },
   );
 }
+
+void showErrorDialog(BuildContext context, String message, Function action) {
+  showDialog(
+    context: context,
+    builder: (context) {
+      return AlertDialog(
+        title: const Text("You can not do that"),
+        content: Text(message),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+              action();
+            },
+            child: const Text('Ok'),
+          ),
+        ],
+      );
+    },
+  );
+}

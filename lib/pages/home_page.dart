@@ -3,6 +3,8 @@ import 'package:family_competition/services/client.dart';
 import 'package:family_competition/services/server.dart';
 import 'package:flutter/material.dart';
 
+import '../utils/game_utils.dart';
+
 class HomePage extends StatefulWidget {
   const HomePage({super.key, required this.title});
 
@@ -14,7 +16,9 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   void _startClient() {
-    navigateToGamePage(context);
+    navigateToGamePage(context, (errorMessage) {
+      showErrorDialog(context, errorMessage, () {});
+    });
   }
 
   void _startServer() {

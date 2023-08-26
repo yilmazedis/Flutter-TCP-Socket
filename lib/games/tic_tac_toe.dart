@@ -222,7 +222,7 @@ Widget squareTextField(
       controller: controller,
       enabled: isEnabled,
       maxLength: 1,
-      style: const TextStyle(fontSize: 30),
+      style: const TextStyle(fontSize: 48),
       onChanged: (value) {
         // You can perform any action here when the text changes
       },
@@ -231,6 +231,7 @@ Widget squareTextField(
       textAlign: TextAlign.center,
       maxLengthEnforcement: MaxLengthEnforcement.enforced, // Prevent cursor overflow
       decoration: const InputDecoration(
+        contentPadding: EdgeInsets.all(0),
         border: OutlineInputBorder(),
       ),
     ),
