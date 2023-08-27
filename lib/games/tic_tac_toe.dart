@@ -63,7 +63,6 @@ class _TicTacToeGameState extends State<TicTacToe> {
 
   void _initializeGame() {
     _board = List.generate(initRow, (_) => List.generate(initCol, (_) => ''));
-    _currentPlayer = 'O';
     _gamesPlayed = 0;
     _gameOver = false;
   }

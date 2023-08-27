@@ -1,4 +1,3 @@
-import 'package:family_competition/games/tic_tac_toe.dart';
 import 'package:flutter/material.dart';
 import '../services/client.dart';
 import '../services/server.dart';
@@ -12,9 +11,6 @@ class GamePage extends StatefulWidget {
 }
 
 class _GamePageState extends State<GamePage> {
-
-  // final List<String> gameNames = ['Tic Tac Toe', 'Test Game', 'Test Game']; // List of game names
-
 
   @override
   void initState() {

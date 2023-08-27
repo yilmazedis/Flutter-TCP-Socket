@@ -1,7 +1,4 @@
 import 'package:flutter/material.dart';
-import 'games/Minesweeper.dart';
-import 'games/hangman.dart';
-import 'games/simon_says.dart';
 import 'pages/home_page.dart';
 
 void main() {

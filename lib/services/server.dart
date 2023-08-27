@@ -24,27 +24,32 @@ List<Game> games = [
 ];
 
 void handleConnection(Socket client) {
-  printGreen(
-    "Connection from ${client.remoteAddress.address}:${client.remotePort}",
-  );
+  printDebug("Connection from ${client.remoteAddress.address}:${client.remotePort}",);
 
   client.listen((Uint8List data) {
       final message = String.fromCharCodes(data);
 
-      /// ******* ///
-      /// Prompts ///
-      /// Add New Player
-      _newPlayer(socket: client, message: message);
+      /// read and split prompt
+      List<String> prompt = message.split(":").where((part) => part.isNotEmpty).toList();
 
-      /// Add New Message
-      _newMessage(message: message);
+      /// fetch function
+      String functionName = prompt[0];
+      final function = promptsMap[functionName];
+      if (function == null) {
+        printDebug("Function '$functionName' not found.");
+        return;
+      }
 
-      /// getSelectedGameIndex
-      _getSelectedGameIndex(socket: client, message: message);
-
-      /// playerNumberInGame
-      _getPlayerNumberInGame(socket: client, message: message);
-
+      /// **************** ///
+      /// Run Instructions ///
+      switch (prompt.length) {
+        case 1:
+          function(socket: client);
+          break;
+        case 2:
+          function(socket: client, input: prompt[1]);
+          break;
+      }
     },
 
     // handle errors
@@ -73,36 +78,34 @@ void _handleIfPlayerLeft(Socket client) {
   }));
 }
 
-void _newPlayer({required Socket socket ,required String message}) {
-  if (!message.startsWith(StringMatcher.namePrefix)) { return; }
+final promptsMap = {
+  PromptNames.name: _newPlayer,
+  PromptNames.message: _newMessage,
+  PromptNames.selectedGameIndex: _getSelectedGameIndex,
+  PromptNames.activePlayer: _getActivePlayer,
+};
 
-  final input = deconstructInput(StringMatcher.namePrefix, message);
+void _newPlayer({required Socket socket, required String input}) {
   activePlayer++;
-  players.add(Player(socket: socket, username: input, message: ""));
+  players.add(Player(socket: socket, username: input));
   for (var player in players) {
     player.socket.write("${deconstructInput(StringMatcher.namePrefix, input)} joined the game");
   }
 }
 
-void _newMessage({required String message}) {
-  if (!message.startsWith(StringMatcher.messagePrefix)) { return; }
-
-  final input = deconstructInput(StringMatcher.messagePrefix, message);
+void _newMessage({required Socket socket, required String input}) {
   for (var player in players) {
     player.socket.write(input);
     printDebug(input);
   }
 }
 
-void _getSelectedGameIndex({required Socket socket, required String message}) {
-  if (message != StringMatcher.selectedGameIndexPrefix) { return; }
+void _getSelectedGameIndex({required Socket socket}) {
   final output = constructInput(StringMatcher.selectedGameIndexPrefix, selectedGameIndex.toString());
   socket.write(output);
 }
 
-void _getPlayerNumberInGame({required Socket socket, required String message}) {
-  if (message != StringMatcher.activePlayerPrefix) { return; }
-
+void _getActivePlayer({required Socket socket}) {
   final output = constructInput(StringMatcher.activePlayerPrefix, activePlayer.toString());
   socket.write(output);
 }

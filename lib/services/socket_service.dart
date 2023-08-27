@@ -22,9 +22,17 @@ String deconstructInput(String prefix, String input) {
 }
 
 class StringMatcher {
-  static const String namePrefix = "name:";
-  static const String messagePrefix = "message:";
+  static const String namePrefix = "${PromptNames.name}:";
+  static const String messagePrefix = "${PromptNames.message}:";
 
-  static const String selectedGameIndexPrefix = "selectedGameIndex:";
-  static const String activePlayerPrefix= "activePlayer:";
+  static const String selectedGameIndexPrefix = "${PromptNames.selectedGameIndex}:";
+  static const String activePlayerPrefix= "${PromptNames.activePlayer}:";
+}
+
+class PromptNames {
+  static const String name = "name";
+  static const String message = "message";
+
+  static const String selectedGameIndex = "selectedGameIndex";
+  static const String activePlayer= "activePlayer";
 }
