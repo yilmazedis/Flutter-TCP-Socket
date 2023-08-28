@@ -60,7 +60,7 @@ class _HangmanGameState extends State<HangmanGame> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Hangman Game'),
+        title: const Text('Hangman Game'),
       ),
       body: Center(
         child: Column(
@@ -68,19 +68,19 @@ class _HangmanGameState extends State<HangmanGame> {
           children: [
             Text(
               'Attempts Left: $attemptsLeft',
-              style: TextStyle(fontSize: 20),
+              style: const TextStyle(fontSize: 20),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             Text(
               _getDisplayWord(),
-              style: TextStyle(fontSize: 24),
+              style: const TextStyle(fontSize: 24),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
 
             Padding(
               padding: const EdgeInsets.all(24.0),
               child: GridView.builder(
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 6, // You can adjust the number of columns here
                   mainAxisSpacing: 10.0,
                   crossAxisSpacing: 10.0,
@@ -105,7 +105,7 @@ class _HangmanGameState extends State<HangmanGame> {
                       child: Center(
                         child: Text(
                           letter,
-                          style: TextStyle(
+                          style: const TextStyle(
                             color: Colors.white,
                             fontSize: 18,
                           ),
@@ -119,7 +119,7 @@ class _HangmanGameState extends State<HangmanGame> {
             if (_gameOver)
               Text(
                 _matchResult,
-                style: TextStyle(fontSize: 24),
+                style: const TextStyle(fontSize: 24),
               ),
           ],
         ),

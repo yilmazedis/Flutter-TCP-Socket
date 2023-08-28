@@ -1,7 +1,10 @@
+import 'package:family_competition/utils/terminal_service.dart';
 import 'package:flutter/material.dart';
 import 'dart:math';
 
 class MinesweeperGame extends StatefulWidget {
+  const MinesweeperGame({super.key});
+
   @override
   _MinesweeperGameState createState() => _MinesweeperGameState();
 }
@@ -64,7 +67,7 @@ class _MinesweeperGameState extends State<MinesweeperGame> {
 
     if (isMine[row][col]) {
       // Handle game over
-      print("Game Over");
+      printDebug("Game Over");
       _matchResult = "Game Over";
       _gameOver = true;
     } else {
@@ -111,7 +114,7 @@ class _MinesweeperGameState extends State<MinesweeperGame> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Minesweeper'),
+        title: const Text('Minesweeper'),
       ),
       body: Center(
         child: Column(
@@ -142,7 +145,7 @@ class _MinesweeperGameState extends State<MinesweeperGame> {
                       child: Center(
                         child: Text(
                           revealed[row][col] ? (isMine[row][col] ? "💣" : (mineCount == 0 ? "" : mineCount.toString())) : "",
-                          style: TextStyle(fontSize: 20),
+                          style: const TextStyle(fontSize: 20),
                         ),
                       ),
                     ),

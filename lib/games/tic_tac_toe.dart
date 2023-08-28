@@ -1,8 +1,6 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'dart:typed_data';
 import '../services/client.dart';
 import '../services/socket_service.dart';
 import '../utils/game_utils.dart';
@@ -51,7 +49,7 @@ class _TicTacToeGameState extends State<TicTacToe> {
         _gamesPlayed++;
         if (_checkWin(state.row, state.col, state.currentPlayer)) {
           _matchResult = 'Player ${state.currentPlayer} wins!';
-          print(_matchResult);
+          printDebug(_matchResult);
           _gameOver = true;
         } else if (_gamesPlayed >= initRow * initCol) {
           _matchResult = "Evenly";
@@ -144,13 +142,15 @@ class _TicTacToeGameState extends State<TicTacToe> {
       child: Scaffold(
         appBar: AppBar(
           automaticallyImplyLeading: false, // Hide back button
-          title: Text('Tic Tac Toe'),
+          title: const Text('Tic Tac Toe'),
           actions: [
             IconButton(
               icon: const Icon(Icons.exit_to_app),
               onPressed: () {
                 showQuitGameDialog(context, () async {
-                  await widget.socket.close().then((value) {
+                  LoadingOverlay.show(context);
+                  await widget.socket.close().then((_) {
+                    LoadingOverlay.hide();
                     Navigator.pop(context);
                   });
                 });
@@ -186,9 +186,9 @@ class _TicTacToeGameState extends State<TicTacToe> {
                 if (_gameOver)
                   Text(
                     _matchResult,
-                    style: TextStyle(fontSize: 24),
+                    style: const TextStyle(fontSize: 24),
                   ),
-                SizedBox(height: 40,)
+                const SizedBox(height: 40,)
               ],
             ),
           ),

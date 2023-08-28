@@ -4,6 +4,8 @@ import 'dart:math';
 import 'package:flutter/services.dart';
 
 class SimonSaysGame extends StatefulWidget {
+  const SimonSaysGame({super.key});
+
   @override
   _SimonSaysGameState createState() => _SimonSaysGameState();
 }
@@ -19,7 +21,7 @@ class _SimonSaysGameState extends State<SimonSaysGame> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Simon Says Game'),
+        title: const Text('Simon Says Game'),
       ),
       body: Center(
         child: Column(
@@ -27,7 +29,7 @@ class _SimonSaysGameState extends State<SimonSaysGame> {
           children: [
             Text('Simon Says $successNum', style: const TextStyle(fontSize: 30)),
 
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             Wrap(
               children: List.generate(4, (index) {
                 return GestureDetector(
@@ -72,12 +74,12 @@ class _SimonSaysGameState extends State<SimonSaysGame> {
 
   void playSequence() async {
     for (int step in sequence) {
-      await Future.delayed(Duration(seconds: 1));
+      await Future.delayed(const Duration(seconds: 1));
       setState(() {
         currentStep = step;
       });
       SystemSound.play(SystemSoundType.click);
-      await Future.delayed(Duration(seconds: 1));
+      await Future.delayed(const Duration(seconds: 1));
       setState(() {
         currentStep = -1; // Reset to no step
       });
@@ -126,15 +128,15 @@ class _SimonSaysGameState extends State<SimonSaysGame> {
         context: context,
         builder: (context) {
           return AlertDialog(
-            title: Text('Game Over'),
-            content: Text('You lost. Would you like to play again?'),
+            title: const Text('Game Over'),
+            content: const Text('You lost. Would you like to play again?'),
             actions: [
               TextButton(
                 onPressed: () {
                   Navigator.of(context).pop();
                   startGame();
                 },
-                child: Text('Play Again'),
+                child: const Text('Play Again'),
               ),
             ],
           );

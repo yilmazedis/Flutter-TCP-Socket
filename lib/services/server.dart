@@ -6,7 +6,7 @@ import '../models/player.dart';
 import 'socket_service.dart';
 import '../utils/terminal_service.dart';
 
-Future<void> connectAsServer() async {
+Future<ServerSocket> connectAsServer() async {
   final ip = InternetAddress.anyIPv4;
   final server = await ServerSocket.bind(ip, portNumber);
   printDebug("Server is running on: ${ip.address}:$portNumber");
@@ -25,6 +25,7 @@ Future<void> connectAsServer() async {
     printDebug('Server Left');
     server.close();
   });
+  return server;
 }
 
 List<Player> players = [];

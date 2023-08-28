@@ -1,3 +1,4 @@
+import 'package:family_competition/utils/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'pages/home_page.dart';
 
@@ -12,13 +13,14 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'TCP Socket',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.blueGrey),
+        primarySwatch: metallicPrimaryColor,
         useMaterial3: true,
       ),
-      home: const HomePage(title: 'Flutter Demo Home Page'),
+      home: const HomePage(title: 'Family Competition'),
       //home: SimonSaysGame(),
     );
   }
