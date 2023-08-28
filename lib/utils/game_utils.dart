@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 
 void showQuitGameDialog(BuildContext context, Function quit) {
@@ -40,4 +42,13 @@ void showErrorDialog(BuildContext context, String message, Function action) {
       );
     },
   );
+}
+
+extension BoolExt on bool? {
+  bool isTrue() {
+    if (this == null) {
+      return false;
+    }
+    return this!;
+  }
 }

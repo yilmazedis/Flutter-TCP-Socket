@@ -47,7 +47,7 @@ void navigateToGamePage(BuildContext context, [Function(String)? errorMessage]) 
     sendMessage(socket: socket, message: StringMatcher.selectedGameIndexPrefix);
 
     // Wait for server to send you selected game index
-    listenToSocket(socket, (message) async {
+    listenToSocket(socket: socket, responseHandler: (message) async {
 
       if (message.startsWith(StringMatcher.selectedGameIndexPrefix)) {
         final input = deconstructInput(StringMatcher.selectedGameIndexPrefix, message);

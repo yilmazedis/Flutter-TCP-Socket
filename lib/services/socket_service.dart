@@ -4,6 +4,8 @@ enum SocketAction { username, message, unknown }
 
 int selectedGameIndex = 0;
 int activePlayer = 0;
+String playerName = "No Name";
+int portNumber = 3000;
 
 void sendMessage({required Socket socket, required String message}) {
   socket.write(message);

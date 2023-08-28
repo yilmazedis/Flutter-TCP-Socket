@@ -8,10 +8,22 @@ import '../utils/terminal_service.dart';
 
 Future<void> connectAsServer() async {
   final ip = InternetAddress.anyIPv4;
-  final server = await ServerSocket.bind(ip, 3000);
-  printDebug("Server is running on: ${ip.address}:3000");
+  final server = await ServerSocket.bind(ip, portNumber);
+  printDebug("Server is running on: ${ip.address}:$portNumber");
   server.listen((Socket event) {
     handleConnection(event);
+  },
+
+  // handle errors
+  onError: (error) {
+    printDebug(error);
+    server.close();
+  },
+
+  // handle the client closing the connection
+  onDone: () {
+    printDebug('Server Left');
+    server.close();
   });
 }
 
@@ -57,6 +69,7 @@ void handleConnection(Socket client) {
       printDebug(error);
       client.close();
       _handleIfPlayerLeft(client);
+      printDebug("Total player number is ${players.length}");
     },
 
     // handle the client closing the connection
@@ -64,6 +77,7 @@ void handleConnection(Socket client) {
       printDebug('Client left');
       client.close();
       _handleIfPlayerLeft(client);
+      printDebug("Total player number is ${players.length}");
     },
   );
 }
@@ -72,6 +86,7 @@ void _handleIfPlayerLeft(Socket client) {
   players.removeWhere(((element) {
     if (element.socket == client) {
       activePlayer--;
+      printDebug("Total player number is ${element.username}");
       return true;
     }
     return false;
@@ -87,9 +102,12 @@ final promptsMap = {
 
 void _newPlayer({required Socket socket, required String input}) {
   activePlayer++;
+  /// TODO: fix activePlayer with Player
   players.add(Player(socket: socket, username: input));
+  printDebug("Total player number is ${players.length}");
   for (var player in players) {
-    player.socket.write("${deconstructInput(StringMatcher.namePrefix, input)} joined the game");
+    /// TODO: fix playerName with constructInput
+    player.socket.write("$input joined the game");
   }
 }
 

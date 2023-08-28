@@ -38,12 +38,13 @@ class _TicTacToeGameState extends State<TicTacToe> {
   }
 
   void listenSocket(Socket socket) {
-    listenToSocket(socket, (message) {
+    listenToSocket(socket: socket, isInGame: true, responseHandler: (message) {
       setState(() {
         final newMessage = deconstructInput(StringMatcher.messagePrefix, message);
 
         final state = deConstruct(newMessage);
         if (state.currentPlayer.isEmpty) {
+          printDebug("from Client: $newMessage");
           return;
         }
         _board[state.row][state.col] = state.currentPlayer;
@@ -58,7 +59,7 @@ class _TicTacToeGameState extends State<TicTacToe> {
         }
       });
     });
-    sendMessage(socket: socket, message: constructInput(StringMatcher.namePrefix, "Yilmaz"));
+    sendMessage(socket: socket, message: constructInput(StringMatcher.namePrefix, playerName));
   }
 
   void _initializeGame() {
